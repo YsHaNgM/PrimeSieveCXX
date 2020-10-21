@@ -29,18 +29,24 @@ void filter(int &count, int &p, int *val)
 };
 int main(int argc, char *argv[])
 {
+#ifdef _OPENMP
     std::clock_t c_start = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();
-    auto n = 100;
+    auto n = 1000;
     ptr numbers(new int[n + 1]);
     std::fill(numbers.get(), numbers.get() + n, 1);
-    for (auto p = 2; p <= std::sqrt(n); p++)
+    // #pragma omp parallel shared(numbers), firstprivate(n)
     {
-        if (numbers[p] != 0)
+        int bound = std::sqrt(n);
+        // #pragma omp for
+        for (auto p = 2; p <= bound; p++)
         {
-            for (int count = p * 2; count <= n; count++)
+            if (numbers[p] != 0)
             {
-                filter(count, p, numbers.get() + count);
+                for (int count = p * 2; count <= n; count++)
+                {
+                    filter(count, p, numbers.get() + count);
+                }
             }
         }
     }
@@ -58,5 +64,6 @@ int main(int argc, char *argv[])
             std::cout << i << " ";
         }
     }
+#endif
     return 0;
 }

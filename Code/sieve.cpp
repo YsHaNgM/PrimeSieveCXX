@@ -13,18 +13,19 @@
 using ptr = std::shared_ptr<int[]>; // gcc-7 is needed, for shared_ptr [] operand c++17 P0414R2
 void filter(int &count, int &p, int *val)
 {
-    if (*val == 1)
-    {
-        auto mod = (count % p);
-        switch (mod)
-        {
-        case 0:
-            *val = 0;
-            break;
-        default:
-            break;
-        }
-    }
+    *val *= (count % p);
+    // if (*val == 1)
+    // {
+    //     auto mod = (count % p);
+    //     switch (mod)
+    //     {
+    //     case 0:
+    //         *val = 0;
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    // }
 };
 int main(int argc, char *argv[])
 {
@@ -33,9 +34,8 @@ int main(int argc, char *argv[])
     std::fill(numbers.get(), numbers.get() + n, 1);
     for (auto p = 2; p <= std::sqrt(n); p++)
     {
-        if (numbers[p] == 1)
+        if (numbers[p] != 0)
         {
-
             for (int count = p * 2; count <= n; count++)
             {
                 filter(count, p, numbers.get() + count);
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     }
     for (auto i = 2; i <= n; i++)
     {
-        if (numbers[i] == 1)
+        if (numbers[i] != 0)
         {
             std::cout << i << " ";
         }

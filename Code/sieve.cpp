@@ -29,6 +29,8 @@ void filter(int &count, int &p, int *val)
 };
 int main(int argc, char *argv[])
 {
+    std::clock_t c_start = std::clock();
+    auto t_start = std::chrono::high_resolution_clock::now();
     auto n = 100;
     ptr numbers(new int[n + 1]);
     std::fill(numbers.get(), numbers.get() + n, 1);
@@ -41,11 +43,14 @@ int main(int argc, char *argv[])
                 filter(count, p, numbers.get() + count);
             }
         }
-        else
-        {
-            continue;
-        }
     }
+    std::clock_t c_end = std::clock();
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << std::fixed << "CPU time used: "
+              << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << " ms\n"
+              << "Wall clock time passed: "
+              << std::chrono::duration<double, std::milli>(t_end - t_start).count()
+              << " ms\n";
     for (auto i = 2; i <= n; i++)
     {
         if (numbers[i] != 0)
